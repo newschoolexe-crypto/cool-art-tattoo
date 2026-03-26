@@ -11,10 +11,15 @@ import FAQSection from "@/components/FAQSection";
 import CTASection from "@/components/CTASection";
 
 const fallbackServices = [
-  { _id: "1", title: "Tatuaggi Custom", slug: { current: "tatuaggi" }, description: "I nostri artisti specializzati ti offrono tatuaggi unici e personalizzati, creati su misura per esprimere la tua individualità. Dalla progettazione alla realizzazione, seguiamo ogni dettaglio per garantire un'opera che racconti una storia e resista nel tempo. Scegli tra diversi stili o porta la tua idea: siamo qui per trasformarla in arte.", icon: "tattoo" },
-  { _id: "2", title: "Piercing", slug: { current: "piercing" }, description: "Precisione e sicurezza sono le nostre priorità quando si tratta di piercing. Utilizziamo strumenti e materiali di alta qualità per garantire risultati sicuri e durevoli. Dalle scelte più classiche alle richieste più originali, il nostro staff esperto ti accompagnerà per un'esperienza serena e professionale.", icon: "piercing" },
-  { _id: "3", title: "Permanent Make-up", slug: { current: "permanent-make-up" }, description: "Il nostro servizio di permanent makeup è pensato per valorizzare il tuo viso con risultati naturali e duraturi. Dalle sopracciglia alle labbra, utilizziamo tecniche avanzate per un make-up semipermanente che esalti la tua bellezza con precisione e professionalità.", icon: "makeup" },
+  { _id: "1", title: "Tatuaggi Custom", slug: { current: "tatuaggi" }, description: "I nostri artisti specializzati ti offrono tatuaggi unici e personalizzati, creati su misura per esprimere la tua individualità.", icon: "tattoo" },
+  { _id: "2", title: "Piercing", slug: { current: "piercing" }, description: "Precisione e sicurezza sono le nostre priorità quando si tratta di piercing.", icon: "piercing" },
+  { _id: "3", title: "Permanent Make-up", slug: { current: "permanent-make-up" }, description: "Il nostro servizio di permanent makeup è pensato per valorizzare il tuo viso con risultati naturali e duraturi.", icon: "makeup" },
 ];
+
+// Helper to find a section by type from Sanity page sections
+function findSection(sections: any[], type: string) {
+  return sections?.find((s: any) => s._type === type) || null;
+}
 
 export default async function HomePage() {
   let page = null, services = null, reviews = null;
@@ -25,54 +30,78 @@ export default async function HomePage() {
   } catch (e) {}
 
   const svc = services || fallbackServices;
+  const sections = page?.sections || [];
 
-  // Homepage images come from the Page "home" sections in Sanity, NOT from services
-  const pageImages = (page?.sections || []).flatMap((s: any) =>
-    (s.images || []).map((img: any) => img?.asset?.url).filter(Boolean)
+  // Extract sections from Sanity
+  const heroSection = findSection(sections, "heroSection");
+  const aboutSection = findSection(sections, "aboutSection");
+  const servicesSection = findSection(sections, "servicesSection");
+  const faqSection = findSection(sections, "faqSection");
+  const ctaSection = findSection(sections, "ctaSection");
+
+  // Images from about section
+  const aboutImages = (aboutSection?.images || [])
+    .map((img: any) => img?.asset?.url)
+    .filter(Boolean);
+
+  // Gallery band from about section images or hero images
+  const allPageImages = sections.flatMap((s: any) =>
+    [...(s.images || []), ...(s.image ? [s.image] : [])]
+      .map((img: any) => img?.asset?.url)
+      .filter(Boolean)
   );
-  const heroImage = page?.sections?.[0]?.image?.asset?.url;
-
-  // About carousel uses page images only
-  const aboutImages = pageImages.slice(0, 5);
-
-  // Gallery band on homepage uses page images only  
-  const homeBandImages = pageImages;
 
   return (
     <>
+      {/* HERO - reads from heroSection in Sanity */}
       <Hero
-        heading="VICIOUS TATTOO APRILIA"
-        subheading="Vicious Tattoo Aprilia"
-        body="Da Vicious Tattoo disegnamo solo opere uniche che rimangono impresse."
-        imageUrl={page?.sections?.[0]?.image?.asset?.url}
+        heading={heroSection?.heading || "VICIOUS TATTOO APRILIA"}
+        subheading={heroSection?.subheading || "Vicious Tattoo Aprilia"}
+        body={heroSection?.body || "Da Vicious Tattoo disegnamo solo opere uniche che rimangono impresse."}
+        imageUrl={heroSection?.image?.asset?.url}
       />
 
+      {/* ABOUT + CAROUSEL - reads from aboutSection in Sanity */}
       <AboutCarousel
-        heading="Vicious Art Tattoo Studio"
-        body={`Vicious Art Tattoo nasce dalla passione per l'arte del tatuaggio e del body piercing. Fondato con l'idea di creare uno spazio dove ogni cliente possa sentirsi a casa e sperimentare un servizio personalizzato, il nostro studio unisce creatività e professionalità in un ambiente accogliente e sicuro.\n\nL'idea di Vicious Art Tattoo è nata dalla voglia di dare vita a un luogo dove l'arte incontra l'individualità. Ogni tatuaggio e ogni piercing che realizziamo è unico, frutto di un lavoro attento e rispettoso delle idee e delle storie di chi lo sceglie.\n\nVicious Art Tattoo è molto più di uno studio: è una comunità di artisti e appassionati che condividono l'amore per l'arte e il desiderio di creare qualcosa di autentico.`}
+        heading={aboutSection?.heading || "Vicious Art Tattoo Studio"}
+        body={aboutSection?.body || "Vicious Art Tattoo nasce dalla passione per l'arte del tatuaggio e del body piercing."}
         images={aboutImages}
-        ctaText="Prenota la consulenza"
+        ctaText={aboutSection?.ctaText || "Prenota la consulenza"}
       />
 
+      {/* MARQUEE */}
       <Marquee />
 
-      <ServicesSection heading="I Nostri Servizi" services={svc} />
+      {/* SERVICES - reads heading from servicesSection, cards from Service documents */}
+      <ServicesSection
+        heading={servicesSection?.heading || "I Nostri Servizi"}
+        services={svc}
+      />
 
+      {/* PRENOTA button */}
       <div className="text-center py-8 bg-brand-black fade-in-up">
         <a href="#prenota" className="inline-block px-10 py-4 border border-brand-cream/40 text-brand-cream font-accent text-xs tracking-[0.25em] uppercase hover:border-brand-gold hover:text-brand-gold transition-all">
           Prenota Consulenza
         </a>
       </div>
 
-      {homeBandImages.length > 0 && <GalleryBand images={homeBandImages} />}
+      {/* GALLERY BAND - from about section images */}
+      {allPageImages.length > 0 && <GalleryBand images={allPageImages} />}
 
+      {/* REVIEWS */}
       <ReviewsSection reviews={reviews} />
 
-      <FAQSection />
+      {/* FAQ - reads from faqSection in Sanity */}
+      <FAQSection
+        heading={faqSection?.heading || "FAQ"}
+        items={faqSection?.items}
+      />
 
+      {/* CTA - reads from ctaSection in Sanity */}
       <CTASection
-        heading="Prenota la consulenza"
-        subheading="Pronto a trasformare la tua idea in arte? Prenota ora la tua sessione!"
+        heading={ctaSection?.heading || "Prenota la consulenza"}
+        subheading={ctaSection?.subheading || "Pronto a trasformare la tua idea in arte? Prenota ora la tua sessione!"}
+        imageUrl={ctaSection?.image?.asset?.url}
       />
     </>
   );
