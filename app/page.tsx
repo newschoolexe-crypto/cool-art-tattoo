@@ -26,15 +26,17 @@ export default async function HomePage() {
 
   const svc = services || fallbackServices;
 
-  // Collect gallery band images from all services
-  const bandImages = svc.flatMap((s: any) =>
-    (s.galleryBand || []).map((img: any) => img?.asset?.url).filter(Boolean)
+  // Homepage images come from the Page "home" sections in Sanity, NOT from services
+  const pageImages = (page?.sections || []).flatMap((s: any) =>
+    (s.images || []).map((img: any) => img?.asset?.url).filter(Boolean)
   );
+  const heroImage = page?.sections?.[0]?.image?.asset?.url;
 
-  // Collect about images from first service or page
-  const aboutImages = svc.flatMap((s: any) =>
-    (s.galleryBand || []).slice(0, 3).map((img: any) => img?.asset?.url).filter(Boolean)
-  );
+  // About carousel uses page images only
+  const aboutImages = pageImages.slice(0, 5);
+
+  // Gallery band on homepage uses page images only  
+  const homeBandImages = pageImages;
 
   return (
     <>
@@ -62,7 +64,7 @@ export default async function HomePage() {
         </a>
       </div>
 
-      {bandImages.length > 0 && <GalleryBand images={bandImages} />}
+      {homeBandImages.length > 0 && <GalleryBand images={homeBandImages} />}
 
       <ReviewsSection reviews={reviews} />
 

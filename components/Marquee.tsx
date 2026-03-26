@@ -3,10 +3,16 @@ export default function Marquee({ items }: { items?: string[] }) {
   const repeated = [...words, ...words, ...words, ...words];
 
   return (
-    <section className="py-8 bg-brand-dark overflow-hidden border-y border-brand-gray/10">
+    <section className="py-8 overflow-hidden">
       <div className="marquee-track">
         {repeated.map((word, i) => (
-          <span key={i} className="font-heading text-4xl sm:text-6xl lg:text-7xl text-brand-cream/8 uppercase tracking-wider whitespace-nowrap mx-8 select-none">
+          <span key={i} className="text-4xl sm:text-6xl lg:text-7xl uppercase tracking-wider whitespace-nowrap mx-8 select-none"
+            style={{
+              fontFamily: '"Cormorant Garamond", serif',
+              fontWeight: 700,
+              color: "transparent",
+              WebkitTextStroke: "1px rgba(245, 240, 235, 0.15)",
+            }}>
             {word}
           </span>
         ))}

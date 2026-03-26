@@ -9,10 +9,15 @@ interface HeroProps {
 export default function Hero({ heading, subheading, body, imageUrl, showCta = true }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-brand-black">
+      <div className="absolute inset-0 bg-brand-black" style={{ clipPath: "inset(0)" }}>
         {imageUrl && (
-          <div className="absolute inset-0 ken-burns bg-cover bg-center opacity-40"
-            style={{ backgroundImage: `url(${imageUrl})` }} />
+          <div className="absolute inset-0 ken-burns opacity-40"
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundAttachment: "fixed",
+            }} />
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-brand-black/30 to-brand-black" />
       </div>

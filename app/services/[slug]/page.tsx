@@ -158,8 +158,8 @@ export default async function ServicePage({ params }: Props) {
         />
       )}
 
-      {/* Gallery band */}
-      {bandImages.length > 0 && <GalleryBand images={bandImages} />}
+      {/* Gallery band - per service */}
+      {bandImages.length > 0 && !isPMU && <GalleryBand images={bandImages} />}
 
       {/* PMU gallery grid */}
       {isPMU && bandImages.length > 0 && (
@@ -196,8 +196,7 @@ export default async function ServicePage({ params }: Props) {
         </section>
       )}
 
-      {/* Reviews for PMU */}
-      {isPMU && <ReviewsSection reviews={reviews} />}
+      {/* Reviews for PMU - removed per request */}
 
       <CTASection
         heading={s.ctaHeading || fb?.ctaHeading || "Prenota la consulenza"}
