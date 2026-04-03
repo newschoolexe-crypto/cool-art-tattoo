@@ -78,13 +78,6 @@ export default async function HomePage() {
         services={svc}
       />
 
-      {/* PRENOTA button */}
-      <div className="text-center py-8 bg-brand-black fade-in-up">
-        <a href="#prenota" className="inline-block px-10 py-4 border border-brand-cream/40 text-brand-cream font-accent text-xs tracking-[0.25em] uppercase hover:border-brand-gold hover:text-brand-gold transition-all">
-          Prenota Consulenza
-        </a>
-      </div>
-
       {/* GALLERY BAND - from about section images */}
       {allPageImages.length > 0 && <GalleryBand images={allPageImages} />}
 

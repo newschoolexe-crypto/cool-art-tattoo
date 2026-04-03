@@ -3,10 +3,9 @@ interface HeroProps {
   subheading?: string;
   body?: string;
   imageUrl?: string;
-  showCta?: boolean;
 }
 
-export default function Hero({ heading, subheading, body, imageUrl, showCta = true }: HeroProps) {
+export default function Hero({ heading, subheading, body, imageUrl }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-brand-black" style={{ clipPath: "inset(0)" }}>
@@ -34,15 +33,9 @@ export default function Hero({ heading, subheading, body, imageUrl, showCta = tr
           </h1>
         )}
         {body && (
-          <p className="font-body text-brand-cream/60 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="font-body text-brand-cream/60 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
             {body}
           </p>
-        )}
-        {showCta && (
-          <a href="#prenota"
-            className="inline-block px-10 py-4 border border-brand-cream/40 text-brand-cream font-accent text-xs tracking-[0.25em] uppercase hover:border-brand-gold hover:text-brand-gold transition-all">
-            Prenota Consulenza
-          </a>
         )}
       </div>
     </section>
